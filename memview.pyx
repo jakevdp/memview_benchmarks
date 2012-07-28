@@ -4,8 +4,8 @@ cimport cython
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef np.float64_t slice_func(np.float64_t[:] Xi,
-                             np.float64_t[:] Xj):
+cdef np.float64_t slice_func(np.float64_t[::1] Xi,
+                             np.float64_t[::1] Xj):
     cdef np.intp_t k, M
     cdef np.float64_t tmp = 0.0
     M = Xi.shape[0]
