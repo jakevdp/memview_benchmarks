@@ -1,12 +1,19 @@
 import numpy as np
 
+dot = np.dot
+
 def slicefunc(Xi, Xj):
-    return np.dot(Xi, Xj)
+    return dot(Xi, Xj)
 
 def compute_distances(X):
-    X = np.asarray(X)
+    acc = 0.0
     N = X.shape[0]
 
     for i in range(N):
         for j in range(N):
-            slicefunc(X[i], X[j])
+            acc += slicefunc(X[i,:], X[j,:])
+    
+    return acc
+    
+    
+    

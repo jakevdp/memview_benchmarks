@@ -1,24 +1,28 @@
 import numpy as np
 cimport numpy as np
+cimport cython
 
-cdef slice_func(np.float64_t[:] Xi,
-                np.float64_t[:] Xj,
-                np.intp_t M):
-    cdef np.intp_t k
-    cdef np.float64_t tmp
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef np.float64_t slice_func(np.float64_t[::1] Xi,
+                             np.float64_t[::1] Xj):
+    cdef np.intp_t k, M
+    cdef np.float64_t tmp = 0.0
+    M = Xi.shape[0]
 
-    for k from 0 <= k < M:
+    for k in range(M):
         tmp += Xi[k] * Xj[k]
-    
+        
+    return tmp
 
-def compute_distances(object X):
-    cdef object Xobj = np.asarray(X, dtype=np.float64, order='C')
-    cdef np.float64_t[:, ::1] Xmemview = Xobj
+def compute_distances(np.float64_t[:, ::1] X):
+    cdef np.float64_t acc = 0.0
 
     cdef np.intp_t i, j, N
     N = X.shape[0]
-    M = X.shape[1]
 
-    for i from 0 <= i < N:
-        for j from 0 <= j < N:
-            slice_func(Xmemview[i], Xmemview[j], M)
+    for i in range(N):
+        for j in range(N):
+            acc += slice_func(X[i,:], X[j,:])
+    
+    return float(acc)
